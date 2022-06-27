@@ -1,25 +1,53 @@
 import React from 'react';
-import { MdDelete } from 'react-icons/md'
+import { useSelector, useDispatch } from 'react-redux'
+import { removeReserve, updateAmountRequest } from '../../store/modules/reserve/actions'
+import { MdDelete, MdAddCircle, MdRemoveCircle } from 'react-icons/md'
 import './style.css'
 
 export default function Reservas() {
- return (
-   <div>
-     <h1 className='title'>Você solicitou 1 reserva</h1>
-     <div className='reservas'>
-     <img 
-      src='https://sujeitoprogramador.com/wp-content/uploads/2019/12/maceio.jpg' 
-      alt='Maceió'
-     />
-      <strong>Viagem Maceió 7 dias</strong>
-      <span>Quantidade: 2</span>
-      <button type='button' onClick={() => {}}>
-        <MdDelete size={20} color='#191919' />
-      </button>
-     </div>
-     <footer>
-      <button>Solicitar Reservas</button>
-     </footer>
-   </div>
- );
+  const dispatch = useDispatch()
+  const reserves = useSelector(state => state.reserve)
+  
+  const handleRemove = id => {
+    dispatch(removeReserve(id))
+  }
+
+  function decrementAmount(trip) {
+    dispatch(updateAmountRequest(trip.id, trip.amount - 1))
+  }
+
+  function incrementAmount(trip) {
+    dispatch(updateAmountRequest(trip.id, trip.amount + 1))
+  }
+
+  return (
+    <div>
+      <h1 className='title'>Você solicitou {reserves.length} reserva(s)</h1>
+      {reserves.map(reserve => (
+        <div className='reservas' key={reserve.id}>
+        <img 
+          src={reserve.image} 
+          alt={reserve.title}
+        />
+          <strong>{reserve.title}</strong>
+          <div id='amount'>
+            <button type='button' onClick={() => decrementAmount(reserve)}>
+              <MdRemoveCircle size={25} color='#191919' />
+            </button>
+            <input type='text' readonly value={reserve.amount} />
+            <button type='button' onClick={() => incrementAmount(reserve)}>
+              <MdAddCircle size={25} color='#191919' />
+            </button>
+          </div>
+          <button type='button' onClick={() => handleRemove(reserve.id)}>
+            <MdDelete size={20} color='#191919' />
+          </button>
+        </div>
+
+      ))}
+      <footer>
+        <button>Solicitar Reservas</button>
+      </footer>
+    </div>
+  )
 }

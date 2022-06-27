@@ -1,15 +1,20 @@
 import React from 'react'
-import { BrowserRouter } from 'react-router-dom';
-import './App.css';
-import Router from './routes'
+import { Router } from 'react-router-dom';
+import { Provider } from 'react-redux'
+import store from './store'
+import './App.css'
+import Routes from './routes'
 import  Header  from './components/Header'
+import history from './services/history'
 
 function App() {
   return (
-    <BrowserRouter>
-      <Header/>
-      <Router/>
-    </BrowserRouter>
+    <Provider store={store}>
+      <Router history={history}>
+        <Header/>
+        <Routes/>
+      </Router>
+    </Provider>
     
   );
 }
